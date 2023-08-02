@@ -5,7 +5,7 @@ import React, { Component } from 'react';
 import './App.css';
 import UserVideoComponent from './UserVideoComponent';
 
-const APPLICATION_SERVER_URL = process.env.NODE_ENV === 'production' ? '' : 'https://demos.openvidu.io/';
+const APPLICATION_SERVER_URL = process.env.NODE_ENV = 'http://localhost:5000/';
 
 class App extends Component {
     constructor(props) {
@@ -13,8 +13,8 @@ class App extends Component {
 
         // These properties are in the state's component in order to re-render the HTML whenever their values change
         this.state = {
-            mySessionId: 'SessionA',
-            myUserName: 'Participant' + Math.floor(Math.random() * 100),
+            mySessionId: '',
+            myUserName: '',
             session: undefined,
             mainStreamManager: undefined,  // Main video of the page. Will be the 'publisher' or one of the 'subscribers'
             publisher: undefined,
