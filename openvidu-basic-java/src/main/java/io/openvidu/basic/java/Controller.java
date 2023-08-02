@@ -2,8 +2,7 @@ package io.openvidu.basic.java;
 
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,35 +18,24 @@ import io.openvidu.java.client.OpenVidu;
 import io.openvidu.java.client.OpenViduHttpException;
 import io.openvidu.java.client.OpenViduJavaClientException;
 import io.openvidu.java.client.Session;
-import io.openvidu.java.client.SessionProperties;
 
 @CrossOrigin(origins = "*")
 @RestController
 public class Controller {
 
-	@Value("${OPENVIDU_URL}")
-	private String OPENVIDU_URL;
-
-	@Value("${OPENVIDU_SECRET}")
-	private String OPENVIDU_SECRET;
 
 	private OpenVidu openvidu;
 
-	@PostConstruct
-	public void init() {
-		this.openvidu = new OpenVidu(OPENVIDU_URL, OPENVIDU_SECRET);
-	}
+	@Autowired
+	SessionService sessionService;
 
-	/**
-	 * @param params The Session properties
-	 * @return The Session ID
-	 */
 	@PostMapping("/api/sessions")
-	public ResponseEntity<String> initializeSession(@RequestBody(required = false) Map<String, Object> params)
-			throws OpenViduJavaClientException, OpenViduHttpException {
-		SessionProperties properties = SessionProperties.fromJson(params).build();
-		Session session = openvidu.createSession(properties);
-		return new ResponseEntity<>(session.getSessionId(), HttpStatus.OK);
+	public ResponseEntity<?> initializeSession(@RequestBody SessionOpenRequestDto requestDto)
+			throws Exception {
+		sessionService.init();
+		NewSessionInfo newSessionInfo = sessionService.openSession("nickname", requestDto);
+
+		return ResponseEntity.ok(newSessionInfo);
 	}
 
 	/**
